@@ -1,12 +1,6 @@
-import papaparse from './papaparse.js';
 import http from 'k6/http';
 import {check} from 'k6';
-import { SharedArray } from 'k6/data';
-import { scenario } from 'k6/execution';
-
-const csvData = new SharedArray('another data name', function () {
-    return papaparse.parse(open('./data.csv'), { header: true }).data;
-});
+import {scenario} from 'k6/execution';
 
 export const options = {
     scenarios: {
@@ -32,7 +26,6 @@ export const options = {
 };
 
 export default function deleteVideoGame() {
-    // const number = csvData[scenario.iterationInTest].videoGameId;
     const number = scenario.iterationInTest;
     const createRequest = http.del(`http://localhost:8080/app/videogames/${number}`, null, { headers: { 'X-MyHeader': 'k6test' } });
     check(createRequest, {'status is 200: ' : (r) => r.status == 200});

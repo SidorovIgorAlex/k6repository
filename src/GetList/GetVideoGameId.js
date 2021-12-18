@@ -1,12 +1,6 @@
-import papaparse from './papaparse.js';
 import http from 'k6/http';
 import {check} from 'k6';
-import { SharedArray } from 'k6/data';
-import { scenario } from 'k6/execution';
-
-const csvData = new SharedArray('another data name', function () {
-    return papaparse.parse(open('./data.csv'), { header: true }).data;
-});
+import {randomIntBetween} from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 
 export const options = {
     scenarios: {
@@ -32,8 +26,7 @@ export const options = {
 };
 
 export default function getVideoGameId() {
-    // const number = csvData[scenario.iterationInTest].videoGameId;
-    const number = scenario.iterationInTest;
+    const number = randomIntBetween(1, 10);
     const request = http.get(`http://localhost:8080/app/videogames/${number}`);
     check(request, {'status is 200: ' : (r) => r.status == 200})
 }

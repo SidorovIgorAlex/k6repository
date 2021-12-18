@@ -1,7 +1,6 @@
 import http from 'k6/http';
 import {check} from 'k6';
-import {scenario} from 'k6/execution';
-import {randomString} from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
+import {randomIntBetween, randomString} from 'https://jslib.k6.io/k6-utils/1.1.0/index.js';
 
 export const options = {
     scenarios: {
@@ -26,13 +25,13 @@ export const options = {
     }
 };
 
-export default function createVideoGame () {
-    const number = scenario.iterationInTest * 100;
+export default function getVideoGameId() {
+    const number = randomIntBetween(1, 10);
     const date = new Date();
     const name = randomString(10);
     const category = randomString(5);
     const rating = randomString(5);
-    let dataForCreate = JSON.stringify({
+    let editDataVideoGame = JSON.stringify({
         "id": number,
         "name": name,
         "releaseDate": date,
@@ -40,9 +39,8 @@ export default function createVideoGame () {
         "category": category,
         "rating": rating
     })
-    const createRequest = http.post(`http://localhost:8080/app/videogames/`, dataForCreate, {
+    const request = http.put(`http://localhost:8080/app/videogames/${number}`, editDataVideoGame, {
         headers: { 'Content-Type': 'application/json' },
     });
-    check(createRequest, {'status is 200: ': (r) => r.status == 200});
-    check(createRequest, {'verify body response: ': (r) => r.body.includes('{"status": "Record Added Successfully"}')});
+    check(request, {'status is 200: ' : (r) => r.status == 200})
 }
