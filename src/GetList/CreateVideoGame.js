@@ -40,6 +40,7 @@ export default function createVideoGame () {
         "category": category,
         "rating": rating
     })
+
     const createRequest = http.post(`http://localhost:8080/app/videogames/`, dataForCreate, {
         headers: { 'Content-Type': 'application/json' },
     });
